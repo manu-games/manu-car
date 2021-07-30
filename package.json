@@ -1,0 +1,40 @@
+{
+  "name": "manu-crazy-cars",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run clean && parcel index.html --port 8080",
+    "build": "npm run clean && parcel build index.html --public-url ./",
+    "clean": "rimraf ./dist ./.cache"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manu-apps/manu-crazy-cars.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/manu-apps/manu-crazy-cars/issues"
+  },
+  "dependencies": {
+    "assets": "^3.0.1",
+    "eventemitter3-timer": "^1.0.1",
+    "howler": "^2.2.3",
+    "parcel-bundler": "^1.12.5",
+    "parcel-plugin-static-files-copy": "^2.6.0",
+    "pixi.js": "^5.3.10",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.3.5"
+  },
+  "staticFiles": {
+    "staticPath": [
+      {
+        "staticPath": "assets",
+        "staticOutDir": "assets"
+      }
+    ],
+    "watcherGlob": "**"
+  },
+  "homepage": "https://github.com/manu-apps/manu-crazy-cars#readme"
+}
