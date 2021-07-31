@@ -1,3 +1,3 @@
 import {GameApp} from "./GameApp"
 
-const game = new GameApp(800, 270)
+const game = new GameApp(800, 500)
