@@ -1,0 +1,135 @@
+{
+  "frames": {
+    "car_1.png": {
+      "frame": {
+        "x": 10,
+        "y": 10,
+        "w": 200,
+        "h": 339
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 200,
+        "h": 339
+      },
+      "sourceSize": {
+        "w": 204,
+        "h": 339
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "car_2.png": {
+      "frame": {
+        "x": 230,
+        "y": 10,
+        "w": 199,
+        "h": 339
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 4,
+        "y": 0,
+        "w": 199,
+        "h": 339
+      },
+      "sourceSize": {
+        "w": 208,
+        "h": 339
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "car_3.png": {
+      "frame": {
+        "x": 449,
+        "y": 10,
+        "w": 199,
+        "h": 339
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 0,
+        "w": 199,
+        "h": 339
+      },
+      "sourceSize": {
+        "w": 204,
+        "h": 339
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "car_4.png": {
+      "frame": {
+        "x": 668,
+        "y": 10,
+        "w": 199,
+        "h": 339
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 3,
+        "y": 0,
+        "w": 199,
+        "h": 339
+      },
+      "sourceSize": {
+        "w": 205,
+        "h": 339
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    "car_5.png": {
+      "frame": {
+        "x": 887,
+        "y": 10,
+        "w": 199,
+        "h": 339
+      },
+      "rotated": false,
+      "trimmed": true,
+      "spriteSourceSize": {
+        "x": 3,
+        "y": 0,
+        "w": 199,
+        "h": 339
+      },
+      "sourceSize": {
+        "w": 203,
+        "h": 339
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    }
+  },
+  "meta": {
+    "app": "http://free-tex-packer.com",
+    "version": "0.6.7",
+    "image": "cars.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 1096,
+      "h": 359
+    },
+    "scale": 1
+  }
+}
