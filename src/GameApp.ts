@@ -71,7 +71,7 @@ export class GameApp{
     }
 
     private generarEscenario():void{
-        const roadTexture = Sprite.getTexture('sprites/road.png')
+        const roadTexture = Sprite.escenarioTextures['sprites/road.png']
         this.escenario = new Escenario(roadTexture)
 
         this.entidades.push(this.escenario)
@@ -81,7 +81,7 @@ export class GameApp{
     private generarJugadorPrincipal():void{
         const velocidadInicial = 5
         const textureSeleccionada = 1
-        const texture = Sprite.textures[`car_${textureSeleccionada}.png`]
+        const texture = Sprite.autoTextures[`car_${textureSeleccionada}.png`]
         this.jugador = new Auto(texture, GameApp.getWidth()/2, GameApp.getHeight()/2, velocidadInicial)
 
         this.entidades.push(this.jugador)
@@ -92,8 +92,9 @@ export class GameApp{
         this.tiempoTranscurrido += 1
 
         const velocidadInicial = this.nivel
+        // TODO: Implementar un filter para elegir cualquiera que no sea el del jugador principal
         const textureSeleccionada = Lib.getNumberBetween(2,5)
-        const texture = Sprite.textures[`car_${textureSeleccionada}.png`]
+        const texture = Sprite.autoTextures[`car_${textureSeleccionada}.png`]
 
         const rival = new Rival(texture, 0, 0, velocidadInicial)
         const posX = Lib.getNumberBetween(0, GameApp.getWidth() - rival.getWidth())

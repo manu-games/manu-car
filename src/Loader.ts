@@ -19,12 +19,17 @@ export class Loader{
     }
 
     private static setup(loader, resources){
+        // Autos
         const sheet = resources['sprites/cars.json'].data
         const frames = sheet.frames
 
         Object.keys(frames).forEach(key =>{
             const texture = PIXI.Texture.from(key)
-            Sprite.textures[key] = texture
+            Sprite.autoTextures[key] = texture
         })
+
+        // Escenarios
+        const roadTexture = PIXI.Texture.from('sprites/road.png')
+        Sprite.escenarioTextures['sprites/road.png'] = roadTexture
     }
 }
