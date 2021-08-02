@@ -3,9 +3,6 @@ import {App} from './index'
 import {Sprite} from './Sprite'
 
 export class Loader{
-    // TODO: Tipar..!
-    public static textures:any = {}
-
     public static load(){
         const loader = PIXI.Loader.shared
         loader.baseUrl = 'assets'
@@ -28,7 +25,6 @@ export class Loader{
         Object.keys(frames).forEach(key =>{
             const texture = PIXI.Texture.from(key)
             Sprite.textures[key] = texture
-            // Loader.textures[key] = texture
         })
     }
 }
