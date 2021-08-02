@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js'
 import {Auto, Rival, Jugador} from './Jugador'
 import {Lib} from './Lib'
+import {Loader} from './Loader'
 
 type WorldObject = Auto
 
@@ -12,7 +13,7 @@ export class GameApp{
     public jugador:Jugador
     private rivales = []
     private cantidadRivales = 10
-    private nivel:number
+    private nivel:number = 1
     private tiempoTranscurrido:number = 0
 
     public constructor(_width:number, _height:number){
@@ -29,8 +30,11 @@ export class GameApp{
         this.width = _width
         this.height = _height
 
-        this.init()
-        GameApp.app.ticker.add(delta => this.update(delta))
+        Loader.load()
+
+        // loader.load(this.setup)
+        // loader.onComplete.add(this.setup)
+        // this.setup()
     }
 
     public static getWidth():number{
@@ -41,14 +45,16 @@ export class GameApp{
         return GameApp.app.renderer.height
     }
 
-    private init():void{
-        this.nivel = 1
+    public setup():void{
         const velocidadInicial = 5
-        this.jugador = new Auto(this.width/2, this.height/2, velocidadInicial)
-
+        const textureSeleccionada = 1
+        const texture = Loader.textures[`car_${textureSeleccionada}.png`]
+        this.jugador = new Auto(texture, this.width/2, this.height/2, velocidadInicial)
         this.entidades.push(this.jugador)
 
         GameApp.app.stage.addChild(this.jugador.getSprite())
+
+        GameApp.app.ticker.add(delta => this.update(delta))
     }
 
     private update(delta:number):void{
@@ -76,7 +82,10 @@ export class GameApp{
         this.tiempoTranscurrido += 1
 
         const velocidadInicial = this.nivel
-        const rival = new Rival(0, 0, velocidadInicial)
+        const textureSeleccionada = Lib.getNumberBetween(2,5)
+        const texture = Loader.textures[`car_${textureSeleccionada}.png`]
+
+        const rival = new Rival(texture, 0, 0, velocidadInicial)
         const posX = Lib.getNumberBetween(0, GameApp.getWidth() - rival.getWidth())
         rival.setPosX(posX)
 

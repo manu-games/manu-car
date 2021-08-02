@@ -108,19 +108,20 @@ export abstract class Jugador{
 }
 
 export class Auto extends Jugador{
-    public constructor(x:number, y:number, velocidadInicial:number){
+    public constructor(texture: PIXI.Texture, x:number, y:number, velocidadInicial:number){
         super()
 
-        const texture = PIXI.Texture.WHITE
+        // const texture = PIXI.Texture.WHITE
         const sprite = PIXI.Sprite.from(texture)
 
         sprite.anchor.set(0.5)
 
         sprite.x = x
         sprite.y = y
-        sprite.width = 50
-        sprite.height = 90
-        sprite.tint = 0x333333
+        sprite.width = 200
+        sprite.height = 339
+        sprite.scale.set(0.3)
+        // sprite.tint = 0x333333
 
         this.velocidadInicial = velocidadInicial
         this.sprite = sprite
@@ -134,25 +135,25 @@ export class Auto extends Jugador{
 export class Rival extends Jugador{
     colisionado:boolean = false
 
-    public constructor(x:number, y:number, velocidadInicial:number){
+    public constructor(texture: PIXI.Texture, x:number, y:number, velocidadInicial:number){
         super()
 
-        const texture = PIXI.Texture.WHITE
+        // const texture = PIXI.Texture.WHITE
         const sprite = PIXI.Sprite.from(texture)
 
         sprite.anchor.set(0.5)
 
         sprite.x = x
         sprite.y = y
-        sprite.width = 50
-        sprite.height = 90
-        sprite.tint = 0x333333
+        sprite.width = 200
+        sprite.height = 339
+        sprite.scale.set(0.3)
+        sprite.rotation = Math.PI // los rotamos 180º
+        // sprite.tint = 0x333333
 
         this.velocidadInicial = velocidadInicial
         this.sprite = sprite
         this.texture = texture
-
-        // this.setupKeyboard('ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown')
     }
 
     public update(delta:number, index:number):void{
