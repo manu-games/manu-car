@@ -1,15 +1,16 @@
 import * as PIXI from 'pixi.js'
 import {Auto, Rival, Jugador} from './Jugador'
+import {Escenario} from './Escenario'
 import {Lib} from './Lib'
 import {Loader} from './Loader'
+import {Sprite} from './Sprite'
 
-type WorldObject = Auto
+type WorldObject = Auto | Escenario
 
 export class GameApp{
     public static app: PIXI.Application
-    private width:number
-    private height:number
     private entidades: Array<WorldObject> = []
+    public escenario:Escenario
     public jugador:Jugador
     private rivales = []
     private cantidadRivales = 10
@@ -27,14 +28,9 @@ export class GameApp{
         })
         document.body.appendChild(GameApp.app.view)
 
-        this.width = _width
-        this.height = _height
-
         Loader.load()
-
-        // loader.load(this.setup)
+        // TODO: Como creeria que deberia ser en realidad
         // loader.onComplete.add(this.setup)
-        // this.setup()
     }
 
     public static getWidth():number{
@@ -46,13 +42,9 @@ export class GameApp{
     }
 
     public setup():void{
-        const velocidadInicial = 5
-        const textureSeleccionada = 1
-        const texture = Loader.textures[`car_${textureSeleccionada}.png`]
-        this.jugador = new Auto(texture, this.width/2, this.height/2, velocidadInicial)
-        this.entidades.push(this.jugador)
-
-        GameApp.app.stage.addChild(this.jugador.getSprite())
+        // NOTA: es importante el orden en que se agregan al stage...
+        this.generarEscenario()
+        this.generarJugadorPrincipal()
 
         GameApp.app.ticker.add(delta => this.update(delta))
     }
@@ -60,8 +52,8 @@ export class GameApp{
     private update(delta:number):void{
         this.generarRivales()
 
-        this.entidades.forEach( (entidad, index) => {
-            entidad.update(delta, index)
+        this.entidades.forEach(entidad => {
+            entidad.update(delta)
         })
 
         this.detectarColisiones()
@@ -78,12 +70,30 @@ export class GameApp{
         })
     }
 
+    private generarEscenario():void{
+        const roadTexture = Sprite.getTexture('sprites/road.png')
+        this.escenario = new Escenario(roadTexture)
+
+        this.entidades.push(this.escenario)
+        GameApp.app.stage.addChild(this.escenario.getSprite())
+    }
+
+    private generarJugadorPrincipal():void{
+        const velocidadInicial = 5
+        const textureSeleccionada = 1
+        const texture = Sprite.textures[`car_${textureSeleccionada}.png`]
+        this.jugador = new Auto(texture, GameApp.getWidth()/2, GameApp.getHeight()/2, velocidadInicial)
+
+        this.entidades.push(this.jugador)
+        GameApp.app.stage.addChild(this.jugador.getSprite())
+    }
+
     private generarRivales():void{
         this.tiempoTranscurrido += 1
 
         const velocidadInicial = this.nivel
         const textureSeleccionada = Lib.getNumberBetween(2,5)
-        const texture = Loader.textures[`car_${textureSeleccionada}.png`]
+        const texture = Sprite.textures[`car_${textureSeleccionada}.png`]
 
         const rival = new Rival(texture, 0, 0, velocidadInicial)
         const posX = Lib.getNumberBetween(0, GameApp.getWidth() - rival.getWidth())
