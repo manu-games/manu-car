@@ -46,7 +46,7 @@ export abstract class Jugador{
         return this.sprite
     }
 
-    public update(delta:number, index:number):void{
+    public update(delta:number):void{
         // - SI trata de salir del canvas hacia la der => lo detenemos ahi
         if(this.sprite.x > GameApp.getWidth()-this.getWidth()/2){
             this.sprite.x = GameApp.getWidth() - this.getWidth()/2
@@ -156,7 +156,7 @@ export class Rival extends Jugador{
         this.texture = texture
     }
 
-    public update(delta:number, index:number):void{
+    public update(delta:number):void{
         // para reutilizar comportamiento de la super clase abstracta
         // y además agregarle comportamiento extra
         // super.update(delta)

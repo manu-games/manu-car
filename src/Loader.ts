@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js'
 import {App} from './index'
+import {Sprite} from './Sprite'
 
 export class Loader{
     // TODO: Tipar..!
@@ -9,6 +10,7 @@ export class Loader{
         const loader = PIXI.Loader.shared
         loader.baseUrl = 'assets'
         loader.add('sprites/cars.json')
+        loader.add('sprites/road.png')
 
         loader.load(this.setup)
         loader.onComplete.add(this.doneLoading)
@@ -25,7 +27,8 @@ export class Loader{
 
         Object.keys(frames).forEach(key =>{
             const texture = PIXI.Texture.from(key)
-            Loader.textures[key] = texture
+            Sprite.textures[key] = texture
+            // Loader.textures[key] = texture
         })
     }
 }
