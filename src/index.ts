@@ -1,3 +1,3 @@
 import {GameApp} from "./GameApp"
 
-const game = new GameApp(800, 500)
+export const App = new GameApp(800, 500)
