@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js'
+import {ManuContainer} from './Pixi.mixin'
 import {Accion} from './Accion'
 import {GameApp} from './GameApp'
 
@@ -56,27 +57,33 @@ export abstract class Jugador{
     }
 
     public update(delta:number):void{
-        // - SI trata de salir del canvas hacia la der => lo detenemos ahi
-        if(this.sprite.x > GameApp.getWidth()-this.getWidth()/2){
-            this.sprite.x = GameApp.getWidth() - this.getWidth()/2
-        }
-        // - SI trata de salir del canvas hacia la izq => lo detenemos ahi
-        else if(this.sprite.x < this.getWidth()/2){
-            this.sprite.x = this.getWidth()/2
-        }
-
-        // - SI trata de salir del canvas hacia arriba => lo detenemos ahi
-        if(this.sprite.y < GameApp.getHeight()/2){
-            this.sprite.y = GameApp.getHeight()/2
-        }
-        // - Si trata de salir del canvas hacia abajo => lo detenemos ahi
-        else if(this.sprite.y > GameApp.getHeight()-this.getHeight()/2){
-            this.sprite.y = GameApp.getHeight()-this.getHeight()/2
-        }
+        this.acotarMovimientosEnX(GameApp.escenario.getZonaJugable())
+        this.acotarMovimientosEnY(GameApp.escenario.getZonaJugable())
 
         this.sprite.x += this.velocidad.vx * delta
-
         this.sprite.y += this.velocidad.vy * delta
+    }
+
+    public acotarMovimientosEnX(zona: ManuContainer){
+        // - SI trata de salir del canvas hacia la der => lo detenemos ahi
+        if(this.sprite.x > zona.getWidth() - this.getWidth()/2){
+            this.sprite.x = zona.getWidth() - this.getWidth()/2
+        }
+        // - SI trata de salir del canvas hacia la izq => lo detenemos ahi
+        if(this.sprite.x < this.getWidth()/2){
+            this.sprite.x = this.getWidth()/2
+        }
+    }
+
+    public acotarMovimientosEnY(zona: ManuContainer){
+        // - SI trata de salir del canvas hacia arriba => lo detenemos ahi
+        if(this.sprite.y < this.getHeight()/2){
+            this.sprite.y = this.getHeight()/2 + 2
+        }
+        // - Si trata de salir del canvas hacia abajo => lo detenemos ahi
+        if(this.sprite.y > zona.getHeight()-this.getHeight()/2){
+            this.sprite.y = zona.getHeight()-this.getHeight()/2-2
+        }
     }
 
     protected setupAbilitiesKeys(keyVelocidadTurbo:string){
@@ -202,15 +209,11 @@ export class Rival extends Jugador{
         // y además agregarle comportamiento extra
         // super.update(delta)
 
-        if(this.sprite.y + this.sprite.height >= GameApp.getHeight()){
-            // this.remover(index)
-            // this.sprite.destroy()
-        }
-
         this.velocidad.vx = 0
         // this.velocidad.vy = this.velocidadInicial * this.velocidadAcelerada
         this.velocidad.vy = GameApp.nivel * this.velocidadAcelerada
 
+        this.acotarMovimientosEnX(GameApp.escenario.getZonaJugable())
         this.sprite.x += this.velocidad.vx * delta
         this.sprite.y += this.velocidad.vy * delta
     }
