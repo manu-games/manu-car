@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js'
+import {ManuContainer} from './Pixi.mixin'
 import {Auto, Rival, Jugador} from './Jugador'
-import {Escenario} from './Escenario'
+import {Escenario, Autopista} from './Escenario'
 import {Lib} from './Lib'
 import {Loader} from './Loader'
 import {Sprite} from './Sprite'
@@ -73,10 +74,13 @@ export class GameApp{
 
     private generarEscenario():void{
         const roadTexture = Sprite.escenarioTextures['sprites/road.png']
-        GameApp.escenario = new Escenario(roadTexture)
+        // const zonaJugable = new PIXI.Container()
+        const zonaJugable = new ManuContainer()
+        GameApp.escenario = new Autopista(roadTexture, zonaJugable)
 
         this.entidades.push(GameApp.escenario)
         GameApp.app.stage.addChild(GameApp.escenario.getSprite())
+        GameApp.app.stage.addChild(GameApp.escenario.getZonaJugable())
     }
 
     private generarJugadorPrincipal():void{
@@ -85,7 +89,8 @@ export class GameApp{
         this.jugador = new Auto(texture, GameApp.getWidth()/2, GameApp.getHeight()/2, GameApp.velocidadAcelerada)
 
         this.entidades.push(this.jugador)
-        GameApp.app.stage.addChild(this.jugador.getSprite())
+        // GameApp.app.stage.addChild(this.jugador.getSprite())
+        GameApp.escenario.getZonaJugable().addChild(this.jugador.getSprite())
     }
 
     private generarRivales():void{
@@ -103,7 +108,8 @@ export class GameApp{
         if(this.tiempoTranscurrido % (100 / (GameApp.nivel*GameApp.velocidadAcelerada)) == 0){
             this.entidades.push(rival)
             GameApp.rivales.push(rival)
-            GameApp.app.stage.addChild(rival.getSprite())
+            // GameApp.app.stage.addChild(rival.getSprite())
+            GameApp.escenario.getZonaJugable().addChild(rival.getSprite())
         }
     }
 }
