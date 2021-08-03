@@ -3,6 +3,8 @@ import {GameApp} from './GameApp'
 
 export class Escenario{
     private sprite: PIXI.TilingSprite
+    private velocidadAcelerada:number = 1
+    private velocidadAnimacion:number = 1
 
     public constructor(texture: PIXI.Texture){
         this.sprite = new PIXI.TilingSprite(
@@ -10,15 +12,23 @@ export class Escenario{
             GameApp.getWidth(),
             GameApp.getHeight()
         )
+
+        this.velocidadAnimacion = (GameApp.nivel / 2) * this.velocidadAcelerada
     }
 
     public getSprite(): PIXI.TilingSprite{
         return this.sprite
     }
 
-    public update(delta:number):void{
-        this.sprite.tilePosition.y += 0.5
+    public setVelocidadAcelerada(velocidadAcelerada:number):void{
+        this.velocidadAcelerada = velocidadAcelerada
     }
-    // streetSprite.tileScale.set(1.5, 1.7)
-    // app.stage.addChild(streetSprite)
+
+    public setVelocidadAnimacion(velocidadAnimacion:number):void{
+        this.velocidadAnimacion = velocidadAnimacion
+    }
+
+    public update(delta:number):void{
+        this.sprite.tilePosition.y += this.velocidadAnimacion * this.velocidadAcelerada
+    }
 }
