@@ -97,20 +97,34 @@ export class GameApp{
         this.tiempoTranscurrido += 1
 
         // TODO: Implementar un filter para elegir cualquiera que no sea el del jugador principal
-        const textureSeleccionada = Lib.getNumberBetween(2,5)
-        const texture = Sprite.autoTextures[`car_${textureSeleccionada}.png`]
-
-        const rival = new Rival(texture, 0, 0, GameApp.velocidadAcelerada)
-
-        const posX = Lib.getNumberBetween(0, GameApp.getWidth() - rival.getWidth())
-        rival.setPosX(posX)
-
         if(this.tiempoTranscurrido % (100 / (GameApp.nivel*GameApp.velocidadAcelerada)) == 0){
+            const textureSeleccionada = Lib.getNumberBetween(2,5)
+            const texture = Sprite.autoTextures[`car_${textureSeleccionada}.png`]
+
+            const posicionY = this.posicionUltimoRivalConSeparacion()
+            const rival = new Rival(texture, 0, posicionY, GameApp.velocidadAcelerada)
+            const posX = Lib.getNumberBetween(0, GameApp.getWidth() - rival.getWidth())
+            rival.setPosX(posX)
+
             this.entidades.push(rival)
             GameApp.rivales.push(rival)
             // GameApp.app.stage.addChild(rival.getSprite())
             GameApp.escenario.getZonaJugable().addChild(rival.getSprite())
         }
+    }
+
+    private posicionUltimoRivalConSeparacion():number{
+        if(GameApp.rivales.length > 1){
+            // - Con slice(start, end) obtenemos uno o varios elementos
+            // - Al usar [0] obtenemos el elemento en vez de un arreglo con un elemento
+            const ultimoRival: Jugador = GameApp.rivales.slice(-1)[0]
+            const separacion = ultimoRival.getHeight() * 2
+            return ultimoRival.getPosY() - separacion
+        }
+
+        // si aún no hay elementos retornamos y=0
+        return 0
+
     }
 }
 
