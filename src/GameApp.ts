@@ -3,6 +3,7 @@ import {ManuContainer} from './Pixi.mixin'
 import {Auto, Rival, Jugador} from './Jugador'
 import {Escenario, Autopista} from './Escenario'
 import {Lib} from './Lib'
+import {PositionGenerator} from './GenerateRandom'
 import {Loader} from './Loader'
 import {Sprite} from './Sprite'
 
@@ -13,9 +14,9 @@ export class GameApp{
     public static nivel:number = 1
     private entidades: Array<WorldObject> = []
     public static escenario:Escenario
-    public jugador:Jugador
+    public static jugador:Jugador
     public static rivales: Jugador[]= []
-    private cantidadRivales = 10
+    private cantidadRivales = 0
     private tiempoTranscurrido:number = 0
     public static velocidadAcelerada:number = 1
 
@@ -28,6 +29,7 @@ export class GameApp{
             resolution: 1,
             antialias: true
         })
+
         document.body.appendChild(GameApp.app.view)
 
         Loader.load()
@@ -63,7 +65,7 @@ export class GameApp{
 
     private detectarColisiones():void{
         GameApp.rivales.forEach( (rival, index) =>{
-            const hayColision = Lib.hayColisionEntre(rival, this.jugador)
+            const hayColision = Lib.hayColisionEntre(rival, GameApp.jugador)
 
             if(hayColision){
                 console.log('boom')
@@ -79,6 +81,7 @@ export class GameApp{
         GameApp.escenario = new Autopista(roadTexture, zonaJugable)
 
         this.entidades.push(GameApp.escenario)
+        // TODO: Da warning de violación con requestAnimationFrame
         GameApp.app.stage.addChild(GameApp.escenario.getSprite())
         GameApp.app.stage.addChild(GameApp.escenario.getZonaJugable())
     }
@@ -86,25 +89,28 @@ export class GameApp{
     private generarJugadorPrincipal():void{
         const textureSeleccionada = 1
         const texture = Sprite.autoTextures[`car_${textureSeleccionada}.png`]
-        this.jugador = new Auto(texture, GameApp.getWidth()/2, GameApp.getHeight()/2, GameApp.velocidadAcelerada)
+        GameApp.jugador = new Auto(texture, GameApp.getWidth()/2, GameApp.getHeight()/2, GameApp.velocidadAcelerada)
 
-        this.entidades.push(this.jugador)
+        this.entidades.push(GameApp.jugador)
         // GameApp.app.stage.addChild(this.jugador.getSprite())
-        GameApp.escenario.getZonaJugable().addChild(this.jugador.getSprite())
+        GameApp.escenario.getZonaJugable().addChild(GameApp.jugador.getSprite())
     }
 
     private generarRivales():void{
-        this.tiempoTranscurrido += 1
+        this.tiempoTranscurrido++
 
-        // TODO: Implementar un filter para elegir cualquiera que no sea el del jugador principal
-        if(this.tiempoTranscurrido % (100 / (GameApp.nivel*GameApp.velocidadAcelerada)) == 0){
+        const tiempoEstimado = Math.floor(100 / (GameApp.nivel*GameApp.velocidadAcelerada)) // ms
+        if(this.tiempoTranscurrido % tiempoEstimado == 0){
             const textureSeleccionada = Lib.getNumberBetween(2,5)
             const texture = Sprite.autoTextures[`car_${textureSeleccionada}.png`]
 
-            const posicionY = this.posicionUltimoRivalConSeparacion()
-            const rival = new Rival(texture, 0, posicionY, GameApp.velocidadAcelerada)
-            const posX = Lib.getNumberBetween(0, GameApp.getWidth() - rival.getWidth())
-            rival.setPosX(posX)
+            const rival = new Rival(texture, 0, 0, GameApp.velocidadAcelerada)
+            let posicionY = 0
+            // let posicionY = this.posicionUltimoRivalConSeparacion()
+            let posicionX = PositionGenerator.maxScaleConversion(GameApp.escenario.getZonaJugable().getWidth())
+
+            rival.setPosX(posicionX)
+            rival.setPosY(posicionY)
 
             this.entidades.push(rival)
             GameApp.rivales.push(rival)
@@ -118,8 +124,10 @@ export class GameApp{
             // - Con slice(start, end) obtenemos uno o varios elementos
             // - Al usar [0] obtenemos el elemento en vez de un arreglo con un elemento
             const ultimoRival: Jugador = GameApp.rivales.slice(-1)[0]
-            const separacion = ultimoRival.getHeight() * 2
-            return ultimoRival.getPosY() - separacion
+            const separacion = ultimoRival.getHeight()
+            console.log('separacion:'+ separacion)
+
+            return Math.round(ultimoRival.getPosY()) - separacion
         }
 
         // si aún no hay elementos retornamos y=0
