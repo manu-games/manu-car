@@ -3,11 +3,11 @@ import {ManuContainer} from './Pixi.mixin'
 import {Auto, Rival, Jugador} from './Jugador'
 import {Escenario, Autopista} from './Escenario'
 import {Lib} from './Lib'
-import {PositionGenerator} from './GenerateRandom'
+import {PositionGenerator} from './PositionGenerator'
 import {Loader} from './Loader'
 import {Sprite} from './Sprite'
 
-type WorldObject = Escenario | Jugador
+type WorldObject = Jugador | Rival
 
 export class GameApp{
     public static app: PIXI.Application
@@ -15,7 +15,7 @@ export class GameApp{
     private entidades: Array<WorldObject> = []
     public static escenario:Escenario
     public static jugador:Jugador
-    public static rivales: Jugador[]= []
+    public static rivales: Rival[]= []
     private cantidadRivales = 0
     private tiempoTranscurrido:number = 0
     public static velocidadAcelerada:number = 1
@@ -45,6 +45,10 @@ export class GameApp{
         return GameApp.app.renderer.height
     }
 
+    public static getUltimoRival(): Jugador{
+        return GameApp.rivales.slice(-1)[0]
+    }
+
     public setup():void{
         // NOTA: es importante el orden en que se agregan al stage...
         this.generarEscenario()
@@ -56,11 +60,18 @@ export class GameApp{
     private update(delta:number):void{
         this.generarRivales()
 
+        GameApp.escenario.update(delta)
+
         this.entidades.forEach(entidad => {
             entidad.update(delta)
         })
 
         this.detectarColisiones()
+        this.validarRivalesEnZonaJugable()
+    }
+
+    private validarRivalesEnZonaJugable():void{
+        GameApp.rivales = GameApp.rivales.filter(rival => rival.estaEnZonaJugable())
     }
 
     private detectarColisiones():void{
@@ -80,7 +91,6 @@ export class GameApp{
         const zonaJugable = new ManuContainer()
         GameApp.escenario = new Autopista(roadTexture, zonaJugable)
 
-        this.entidades.push(GameApp.escenario)
         // TODO: Da warning de violación con requestAnimationFrame
         GameApp.app.stage.addChild(GameApp.escenario.getSprite())
         GameApp.app.stage.addChild(GameApp.escenario.getZonaJugable())
@@ -96,6 +106,31 @@ export class GameApp{
         GameApp.escenario.getZonaJugable().addChild(GameApp.jugador.getSprite())
     }
 
+    private rivalesEnZonaDeSpawn(){
+        return GameApp.rivales.filter(rival => rival.estaEnZonaDeSpawn())
+    }
+
+    private evitarColisionConOtrosRivales(rival: Rival){
+        let posicionX = PositionGenerator.maxScaleConversion(GameApp.escenario.getZonaJugable().getWidth())
+        let texture = rival.getTexture()
+
+        if(GameApp.rivales.length > 1){
+            for(let i=0; i < this.rivalesEnZonaDeSpawn().length; i++){
+                const rivalAux = new Rival(texture, posicionX, 0, GameApp.velocidadAcelerada)
+                const rivalEnZonaDeSpawn = this.rivalesEnZonaDeSpawn()[i]
+
+                if(Lib.hayColisionEntre(rivalAux, rivalEnZonaDeSpawn)){
+                    // Al cambiar i=-1 hacemos que el iterador empiece desde cero
+                    i = -1
+                    // Siempre que exista una colisión elegimos una nueva posición en el eje-x
+                    posicionX = PositionGenerator.maxScaleConversion(GameApp.escenario.getZonaJugable().getWidth())
+                }
+            }
+        }
+
+        rival.setPosX(posicionX)
+    }
+
     private generarRivales():void{
         this.tiempoTranscurrido++
 
@@ -105,34 +140,13 @@ export class GameApp{
             const texture = Sprite.autoTextures[`car_${textureSeleccionada}.png`]
 
             const rival = new Rival(texture, 0, 0, GameApp.velocidadAcelerada)
-            let posicionY = 0
-            // let posicionY = this.posicionUltimoRivalConSeparacion()
-            let posicionX = PositionGenerator.maxScaleConversion(GameApp.escenario.getZonaJugable().getWidth())
-
-            rival.setPosX(posicionX)
-            rival.setPosY(posicionY)
+            this.evitarColisionConOtrosRivales(rival)
 
             this.entidades.push(rival)
             GameApp.rivales.push(rival)
             // GameApp.app.stage.addChild(rival.getSprite())
             GameApp.escenario.getZonaJugable().addChild(rival.getSprite())
         }
-    }
-
-    private posicionUltimoRivalConSeparacion():number{
-        if(GameApp.rivales.length > 1){
-            // - Con slice(start, end) obtenemos uno o varios elementos
-            // - Al usar [0] obtenemos el elemento en vez de un arreglo con un elemento
-            const ultimoRival: Jugador = GameApp.rivales.slice(-1)[0]
-            const separacion = ultimoRival.getHeight()
-            console.log('separacion:'+ separacion)
-
-            return Math.round(ultimoRival.getPosY()) - separacion
-        }
-
-        // si aún no hay elementos retornamos y=0
-        return 0
-
     }
 }
 

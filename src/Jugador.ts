@@ -7,6 +7,8 @@ export abstract class Jugador{
     protected sprite: PIXI.Sprite
     protected texture: PIXI.Texture
 
+    id:number
+
     public centerX:number
     public centerY:number
     public halfWidth:number
@@ -20,12 +22,20 @@ export abstract class Jugador{
         this.texture = _texture
     }
 
+    public getTexture(): PIXI.Texture{
+        return this.texture
+    }
+
     public setSprite(_sprite: PIXI.Sprite):void{
         this.sprite = _sprite
     }
 
     public setPosX(posX:number):void{
         this.sprite.x = posX
+    }
+
+    public setPosY(posY:number):void{
+        this.sprite.y = posY
     }
 
     public getPosX():number{
@@ -54,6 +64,10 @@ export abstract class Jugador{
 
     public setVelocidadInicial(velocidadInicial:number){
         this.velocidadInicial = velocidadInicial
+    }
+
+    public getID():number{
+        return this.id
     }
 
     public update(delta:number):void{
@@ -88,16 +102,17 @@ export abstract class Jugador{
 
     protected setupAbilitiesKeys(keyVelocidadTurbo:string){
         let velocidadTurbo = Accion.keyboard(keyVelocidadTurbo)
+        const velocidadAcelerada = 12
 
         velocidadTurbo.press = () => {
-            GameApp.escenario.setVelocidadAcelerada(4)
+            GameApp.escenario.setVelocidadAcelerada(velocidadAcelerada)
             // modifica la velocidad en
             // 1. la cantidad de rivales creados
             // 2. la velocidad de cada nuevo rival
-            GameApp.velocidadAcelerada = 4
+            GameApp.velocidadAcelerada = velocidadAcelerada
             // modifica la velocidad de los rivales ya creados
             GameApp.rivales.forEach(rival => {
-                 rival.setVelocidadAcelerada(4)
+                 rival.setVelocidadAcelerada(velocidadAcelerada)
             })
         }
 
@@ -145,6 +160,14 @@ export abstract class Jugador{
         }
 
     }
+
+    public estaEnZonaJugable():boolean{
+        return this.sprite.y < GameApp.getHeight()
+    }
+
+    public estaEnZonaDeSpawn():boolean{
+        return this.sprite.y > 0 && this.sprite.y < this.sprite.height*2
+    }
 }
 
 export class Auto extends Jugador{
@@ -179,8 +202,16 @@ export class Rival extends Jugador{
     velocidadInicial = 5
     velocidadAcelerada = 2
 
+    width = 200
+    height = 339
+
     public constructor(texture: PIXI.Texture, x:number, y:number, velocidadAcelerada:number){
         super()
+
+        if(GameApp.rivales.length > 0)
+            this.id = GameApp.getUltimoRival().getID() + 1
+        else
+            this.id = 1
 
         // const texture = PIXI.Texture.WHITE
         const sprite = PIXI.Sprite.from(texture)
@@ -216,12 +247,5 @@ export class Rival extends Jugador{
         this.acotarMovimientosEnX(GameApp.escenario.getZonaJugable())
         this.sprite.x += this.velocidad.vx * delta
         this.sprite.y += this.velocidad.vy * delta
-    }
-
-    private remover(index:number):void{
-        // GameApp.rivales.slice(index, 1)
-        // if(sprite instanceof PIXI.DisplayObject){
-        //     // sprite.destroy()
-        // }
     }
 }
