@@ -6,6 +6,7 @@ import {Lib} from './Lib'
 import {PositionGenerator} from './PositionGenerator'
 import {Loader} from './Loader'
 import {Sprite} from './Sprite'
+import {TextPuntos} from './ComponenteWeb'
 
 type WorldObject = Jugador | Rival
 
@@ -19,6 +20,7 @@ export class GameApp{
     private cantidadRivales = 0
     private tiempoTranscurrido:number = 0
     public static velocidadAcelerada:number = 1
+    private puntos = 0
 
     public constructor(_width:number, _height:number){
         GameApp.app = new PIXI.Application({
@@ -67,6 +69,7 @@ export class GameApp{
         })
 
         this.detectarColisiones()
+        this.calcularPuntos()
         this.validarRivalesEnZonaJugable()
     }
 
@@ -74,12 +77,20 @@ export class GameApp{
         GameApp.rivales = GameApp.rivales.filter(rival => rival.estaEnZonaJugable())
     }
 
+    private calcularPuntos():void{
+        const rivalesFueraDeZonaJugable = GameApp.rivales.filter(rival => !rival.estaEnZonaJugable())
+
+        this.puntos += rivalesFueraDeZonaJugable.length * 10
+        TextPuntos.setValor(this.puntos)
+        // console.log(this.puntos)
+    }
+
     private detectarColisiones():void{
         GameApp.rivales.forEach( (rival, index) =>{
             const hayColision = Lib.hayColisionEntre(rival, GameApp.jugador)
 
             if(hayColision){
-                console.log('boom')
+                // console.log('boom')
             }
 
         })

@@ -1,7 +1,22 @@
-canvas{
+#game{
     position: absolute;
+    z-index:1;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     border: dashed 2px #333;
+    height: 600px;
+    width:840;
 }
+canvas{
+    position:relative;
+}
+
+/* canvas{ */
+/*     position: absolute; */
+/*     z-index:1; */
+/*     top: 50%; */
+/*     left: 50%; */
+/*     transform: translate(-50%, -50%); */
+/*     border: dashed 2px #333; */
+/* } */

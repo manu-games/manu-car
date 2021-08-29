@@ -19,12 +19,17 @@
   },
   "dependencies": {
     "assets": "^3.0.1",
+    "autoprefixer": "^10.3.1",
     "eventemitter3-timer": "^1.0.1",
     "howler": "^2.2.3",
+    "parcel": "^2.0.0-rc.0",
     "parcel-bundler": "^1.12.5",
     "parcel-plugin-static-files-copy": "^2.6.0",
     "pixi.js": "^5.3.10",
+    "postcss": "^8.3.6",
+    "postcss-cli": "^8.3.1",
     "rimraf": "^3.0.2",
+    "tailwindcss": "^2.2.7",
     "typescript": "^4.3.5"
   },
   "staticFiles": {
